@@ -40,6 +40,13 @@ u_ub =  ones(N*nu,1);   % Upper bound on u
 lb = [x_lb; u_lb];      % Lower bound on z
 ub = [x_ub; u_ub];      % Upper bound on z
 
+
+Ap = [0     0      0    ;
+      0     0      1    ;
+      0.1  -0.855  1.85];
+Bp = [1 0 0]';
+Cp = [0 0 1];
+
 %% MPC
 
 opt = optimset('Display','off', 'Diagnostics','off', 'LargeScale','off', 'Algorithm', 'interior-point-convex');
@@ -62,14 +69,14 @@ for t = 1:N
     
     % Extract optimal control from solution z
     u_ol = z(N*nx+1:N*nx+N*nu);    % Control, open-loop optimal
-    u(t) = u_ol(1:nu); % Only first element is used
+    u(t) = u_ol(1); % Only first element is used
     
     % Simulate system one step ahead
-    x(:,t+1) = A*x(:,t) + B*u(t);
+    x(:,t+1) = Ap*x(:,t) + Bp*u(t) ;
     
 end
 
-y = C*x;
+y = Cp*x;
 
 %% Plot
 t_vec = 1:N; % Time vector
@@ -80,7 +87,7 @@ subplot(2,1,1);
 plot([0,t_vec],y,'-o');
 grid('on');
 box('on');
-ylim([-0.5, 2.5]);
+ylim([-0.5, 3.5]);
 ylabel('y_t');
 subplot(2,1,2);
 plot(t_vec-1,u,'-o');

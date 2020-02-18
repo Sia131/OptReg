@@ -49,7 +49,7 @@ Cp = [0 0 1];
 
 %% MPC
 
-opt = optimset('Display','off', 'Diagnostics','off', 'LargeScale','off', 'Algorithm', 'active-set');
+opt = optimset('Display','off', 'Diagnostics','off', 'LargeScale','off', 'Algorithm', 'interior-point-convex');
 
 u = NaN(nu,N);
 x = NaN(nx,N+1);
