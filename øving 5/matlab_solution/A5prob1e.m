@@ -19,7 +19,7 @@ nu = size(B,2); % nu: number of controls (equals the number of rows in B)
 I_N = eye(N);
 Qt = 2*diag([0, 0, 1]);
 Q = kron(I_N, Qt);
-Rt = 2*10;
+Rt = 2*1;
 R = kron(I_N, Rt);
 G = blkdiag(Q, R);
 
@@ -33,7 +33,7 @@ beq = [A*x0; zeros((N-1)*nx,1)];
 
 % Solving the equality-constrained QP with quadprog
 opt = optimset('Display','notify', 'Diagnostics','off', 'LargeScale','off');
-[z,fval,exitflag,output,lambda] = quadprog(G,[],[],[],Aeq,beq,[],[],x0,opt);
+[z,fval,exitflag,output,lambda] = quadprog(G,[],[],[],Aeq,beq,[],[],[],opt);
 
 % Extracting variables
 y = [x0(3); z(nx:nx:N*nx)]; % y = x3
