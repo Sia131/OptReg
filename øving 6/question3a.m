@@ -42,7 +42,7 @@ opt = optimset('Display','notify', 'Diagnostics','off', 'LargeScale','off');
 [z,fval,exitflag,output,lambda] = quadprog(G,[],[],[],Aeq,beq,lb,ub,[],opt);
 
 % Extracting variables
-y = [x0(3); z(nx:nx:N*nx)]; % y = x3
+y = [x0(3); z(nx:nx:N*nx)] % y = x3
 u = z(N*nx+1:N*nx+N*nu);    % Control
 % Time vector
 t = 1:N;
