@@ -18,6 +18,10 @@ A = eye(2) + Ac*T;
 B = Bc*T;
 C = [1  0];
 
+% Observer:
+p_obs_d = 0.5 + 0.03j*[1; -1]; % Desired poles
+KF = place(A',C',p_obs_d).'; % Resulting observer gain
+
 N = 10; % Length of time horizon
 nx = size(A,2); % number of states (equals the number of rows in A)
 nu = size(B,2); % number of controls (equals the number of rows in B)
@@ -44,12 +48,10 @@ u_ub =  4*ones(N*nu,1); % Upper bound on u
 lb = [x_lb; u_lb];      % Lower bound on z
 ub = [x_ub; u_ub];      % Upper bound on z
 
-% Observer:
-p_obs_d = 0.5 + 0.03j*[1; -1]; % Desired poles
-KF = place(A',C',p_obs_d).'; % Resulting observer gain
+
 %% MPC
 
-opt = optimset('Display','off', 'Diagnostics','off', 'LargeScale','off', 'Algorithm', 'active-set');
+opt = optimset('Display','off', 'Diagnostics','off', 'LargeScale','off', 'Algorithm', 'interior-point-convex');
 
 tf = 50; % Final time step
 x = NaN(2,tf+1);
@@ -65,6 +67,8 @@ x_hat(:,1) = x0_hat;
 
 % Initialize beq
 beq = [zeros(nx,1); zeros((N-1)*nx,1)];
+
+size(Aeq)
 
 for t = 1:tf
     
@@ -86,6 +90,7 @@ for t = 1:tf
     
     % Calculate state estimate based on measurement y
     x_hat(:,t+1) = A*x_hat(:,t) + B*u(:,t) + KF*(y(:,t) - C*x_hat(:,t));
+
 end
 
 %% Plot
